@@ -16,7 +16,6 @@ const PORT = process.env.PORT || 8080;
 const routes = require('./routes/api')
 const BlogPost = require('./models/blogPost');
 
-// const MONGODB_URI = 'mongodb+srv://88dennis:88dennis@cluster0.m6gfk.gcp.mongodb.net/mypostapp?retryWrites=true&w=majority'
 
 // || 'mongodb://localhost:27017/mypostapp'
 // mongoose.connect('mongodb://localhost:27017/mypostapp', {
