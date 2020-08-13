@@ -293,4 +293,14 @@ ignore node_modules
 step7:
 heroku create mernpostapp
 
+heroku addons --all
 
+ heroku addons:create mongolab:sandbox
+heroku addons --all
+
+git add -A
+git commit -m "up"
+
+try to run local firs:
+heroku local
+git push heroku master
