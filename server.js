@@ -38,10 +38,6 @@ app.use(express.json());
 //for deep nested objects use true
 app.use(express.urlencoded({extended: false}));
 
-
-
-
-
 //==========================================
 //SAVING SOMETHING IN DATABASE - FAKE DATA
 // app.get("/seed", function(req, res){
@@ -109,6 +105,7 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.join(__dirname + 'client/build/index.html'));
     });
     }
+
 app.listen(PORT, () => {
     console.log(`server connected to ${PORT}`)
 });
