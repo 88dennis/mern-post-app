@@ -324,3 +324,7 @@ go to heroku:
 
 
 //connect your github repo for automatic deployment
+
+
+//FOR PASSWORD - dotenv
+https://www.youtube.com/watch?v=17UVejOw3zA
