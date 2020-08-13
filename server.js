@@ -29,12 +29,16 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mypostapp
 mongoose.connection.on('connected', ()=>{
     console.log('Mongoose is connected')
 });
-
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'client/build')));
+    }
 // app.use(bodyParser.json());
 app.use(express.json());
 //for simple objects you may use extended false
 //for deep nested objects use true
 app.use(express.urlencoded({extended: false}));
+
+
 
 
 
@@ -74,17 +78,37 @@ app.use(express.urlencoded({extended: false}));
 //morgan is HTTP request logger - will log what routes we are hitting
 app.use(morgan('tiny'));
 
+// if (process.env.NODE_ENV === 'production') {
+//     app.use(express.static(path.join(__dirname, 'build')));
+  
+//     app.get('/', (req, res) => {
+  
+//       res.sendFile(path.join(__dirname, 'build', 'index.html'));
+//     });
+//   }
 //CONFIGURE THE ROUTES
 //define a starting point = "/" or "/api" or anything
 // app.use("/", routes)
+
 app.use("/api", routes) 
 
-if(process.env.NODE_ENV === 'production') {
-    //get to the build folder
-    app.use(express.static('client/build'));
-}
+// if(process.env.NODE_ENV === 'production') {
+//     //get to the build folder
+//     app.use(express.static('client/build'));
+// }
 
 
+// if(process.env.NODE_ENV === 'production') {
+//     //get to the build folder
+//     app.use(express.static('client/build'));
+// }
+
+
+if (process.env.NODE_ENV === 'production') {
+    app.get('*', function(req,res){
+        res.sendFile(path.join(__dirname + 'client/build/index.html'));
+    });
+    }
 app.listen(PORT, () => {
     console.log(`server connected to ${PORT}`)
 });
