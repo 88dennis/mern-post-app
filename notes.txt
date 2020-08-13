@@ -321,3 +321,6 @@ git push -u origin master
 //connect to atlas
 go to heroku:
 -> settings -> reveal config bars -> paste the connection detail on MONGO_URI on config vars
+
+
+//connect your github repo for automatic deployment
