@@ -306,6 +306,18 @@ heroku local
 git push heroku master
 heroku open
 
+create a git repo at gitub
+git add .
+
+git commit -m "first"
+
+after the commit paste create a github repository without readme
+then:
+//paste these two to the terminal these two you will copy from the git repo you created
+git remote add origin https://github.com/88dennis/<sarms-blog.>git
+git push -u origin master
+
+
 //connect to atlas
 go to heroku:
 -> settings -> reveal config bars -> paste the connection detail on MONGO_URI on config vars
