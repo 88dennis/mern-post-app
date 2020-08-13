@@ -1,0 +1,296 @@
+mkdir mern-post-app
+
+cd mern-post-app
+touch server.js
+
+npx create-react-app client
+
+
+npm init -y
+
+npm install mongoose express axios morgan cors concurrently --save
+
+npm install -g nodemon
+
+===========================
+CONCURRENTLY LETS YOU RUN MULTIPLE COMMANDS IN ONE TERMINAL
+from documentation of concurrently
+"start": "concurrently \"command1 arg\" \"command2 arg\""
+
+add this to your scripts:
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "client": "cd client && npm start",
+    "dev": "concurrently \"nodemon server.js\" \"npm run client\""
+  },
+
+cd in your project folder then:
+npm run dev
+======================
+
+
+TRY THIS ALSO
+https://dev.to/numtostr/running-react-and-node-js-in-one-shot-with-concurrently-2oac
+
+killall -9 node
+
+//ROBO 3T
+
+
+=================================
+//SERVER BEFORE REFACTORING
+==================================
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+// const morgan = require('morgan');
+const cors = require('cors');
+// const path = require('path');
+const app = express();
+
+//the process.env.PORT will be used by heroku
+const PORT = process.env.PORT || 8080;
+// const PORT = 8000;
+
+app.use(bodyParser.json());
+app.use(cors());
+
+//morgan is HTTP request logger - will log what routes we are hitting
+// app.use(morgan('tiny'));
+
+// const MONGODB_URI = 'get link from atlas'
+
+// || 'mongodb://localhost:27017/mypostapp'
+mongoose.connect('mongodb://localhost:27017/mypostapp', {
+// mongoose.connect(MONGODB_URI || 'mongodb://localhost:27017/mypostapp', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+//this will tell you if you are connected
+mongoose.connection.on('connected', ()=>{
+    console.log('Mongoose is connected')
+});
+
+//SCHEMA
+const Schema = mongoose.Schema;
+const BlogPostSchema = new Schema({
+    title: String,
+    body: String,
+    date: {
+        type: String,
+        default: Date.now(),
+    }
+});
+
+//MODEL
+//register your schema
+//used to access/ create something in the db
+const BlogPost = mongoose.model('BlogPost', BlogPostSchema);
+
+//SAVING SOMETHING IN DATABASE
+const data = {
+    title: 'Welcome to my post',
+    body: 'This is my first Post...........',
+
+};
+
+//creating a new instance of your model
+//this instance is where we pass the data
+const newBlogPost = new BlogPost(data);
+
+//.save() the new instance
+// newBlogPost.save((error)=>{
+//     if(error){
+//         console.log('Error saving the data');
+//     } else {
+//         console.log('Data has been saved');
+//     }
+// })
+
+//============================
+//TEST ROUTES
+app.get('/api', (req, res)=>    {
+    // const data = {
+    //     username: 'dennis',
+    //     age: 27 
+    // };
+
+    BlogPost.find({ })
+        .then((data)=>{
+            console.log(data);
+            res.json(data);
+
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+
+});
+
+app.get('/api/name', (req, res)=>{
+    const data = {
+        username: 'peterson',
+        age: 28
+    };
+    res.json(data);
+});
+//============================
+
+
+app.listen(PORT, () => {
+    console.log(`server connected to ${PORT}`)
+});
+
+=================================
+SERVER CODE ENDS
+=================================
+
+
+==============================
+REFACTORING - SCHEMA AND MODEL
+================================
+create a folder called models - where you put code related to schema
+create a file inside named blogPost.js - move schema and model code in this file
+require mongoose on line 1 - const mongoose = require('mongoose')
+last line - module.exports = BlogPost -> the name of your model
+
+inside the blogPost.js:
+const mongoose = require('mongoose');
+
+//SCHEMA
+const Schema = mongoose.Schema;
+const BlogPostSchema = new Schema({
+    title: String,
+    body: String,
+    date: {
+        type: String,
+        default: Date.now(),
+    }
+});
+
+//MODEL
+//register your schema
+//used to access/ create something in the db
+const BlogPost = mongoose.model('BlogPost', BlogPostSchema);
+
+//EXPORT YOUR MODEL TO USE IT AND CONNECT TO OTHER FILES AND REQUIRE IT
+module.exports = BlogPost;
+
+==================================
+MODEL AND SCHEMA ENDS
+================================
+
+
+================================
+REFACTORING - ROUTES
+=====================
+create a folder named routes
+create a file named api.js
+
+inside api.js:
+const express = require('express');
+const router = express.Router();
+
+//require the model->make a variable and go to the folder and select the file in particular
+const BlogPost = require('../models/blogPost');
+
+module.exports(router);
+
+move all routes-final is:
+instead of app.get or app.post etc replace it with router.
+
+//THE ROUTE IS USING THE models
+
+const express = require('express');
+const router = express.Router();
+const BlogPost = require('../models/blogPost');
+
+//============================
+//TEST ROUTES
+router.get('/api', (req, res)=>    {
+    // const data = {
+    //     username: 'dennis',
+    //     age: 27 
+    // };
+
+    BlogPost.find({ })
+        .then((data)=>{
+            console.log(data);
+            res.json(data);
+
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+
+});
+
+router.get('/api/name', (req, res)=>{
+    const data = {
+        username: 'peterson',
+        age: 28
+    };
+    res.json(data);
+});
+//============================
+
+
+module.exports(router);
+
+
+// BRING THE ROUTES IN THE SERVER
+in server.js go in the routes folder and select the file in particular
+const routes = require('./routes/api')
+=================================
+=================================
+
+
+DO THE FRONTEND
+
+
+//heroku
+heroku --version
+heroku login
+step1:
+//set port to process.env.PORT:
+const PORT = process.env.PORT || 8080;
+
+step2:
+//set your mongoose.connect to process.env.MONGO_URI
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mypostapp', {
+   useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+step3:
+cd client -> npm run build
+
+if(process.env.NODE_ENV === 'production') {
+    //get to the build folder
+    app.use(express.static('client/build'));
+}
+
+step4:
+package.json outside client
+add to scripts:
+"build": "cd client && npm run build",
+    "install-client":"cd client && npm install",
+    "heroku-postbuild":"npm run install-client && npm run build",
+    "start": "node server.js",
+
+step5:
+in client terminal -> rm -rf .git
+
+step6:
+initialize git on the root folder
+git init
+git status
+touch .gitignore
+ignore node_modules
+
+step7:
+heroku create mernpostapp
+
+
