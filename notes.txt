@@ -304,3 +304,8 @@ git commit -m "up"
 try to run local firs:
 heroku local
 git push heroku master
+heroku open
+
+//connect to atlas
+go to heroku:
+-> settings -> reveal config bars -> paste the connection detail on MONGO_URI on config vars
