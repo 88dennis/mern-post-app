@@ -23,7 +23,7 @@ router.get('/', (req, res)=>    {
 
 
 //TO ARRAY -USING MONGODB SYNTAX
-router.get('/check', (req, res)=>{
+router.get('/check2', (req, res)=>{
     BlogPost.collection.find({}).toArray()
     .then((data)=>{
         console.log(data)

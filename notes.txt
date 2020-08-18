@@ -293,10 +293,17 @@ ignore node_modules
 step7:
 heroku create mernpostapp
 
+MONGOLAB WILL SHUTDOWN NOV10
 heroku addons --all
-
  heroku addons:create mongolab:sandbox
 heroku addons --all
+
+USE THIS:
+//connect to atlas
+go to heroku:
+-> settings -> reveal config bars -> paste the connection detail on MONGODB_URI on config vars
+Key: MONGODB_URI value: mongodb+srv://<username>:</username>:<password>@cluster0.m6gfk.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority
+
 
 git add -A
 git commit -m "up"
@@ -328,3 +335,7 @@ go to heroku:
 
 //FOR PASSWORD - dotenv
 https://www.youtube.com/watch?v=17UVejOw3zA
+
+
+MIGRATION MLAB TO atlas
+https://www.youtube.com/watch?v=cLh_k1ugoKI
